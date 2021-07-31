@@ -8,6 +8,7 @@ using UnityEngine;
 */
 public class Player : MonoBehaviour
 {
+    public Team team;
     private const int RIGHT_CLICK_BUTTON = 1;
 
     private bool draggingMouse = false;
@@ -23,17 +24,27 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButtonDown(RIGHT_CLICK_BUTTON)) {
             draggingMouse = true;
             shipMovementSourcePlanet = getPlanetAtMouse();
-            shipMovementSourcePlanet.GetComponent<Planet>().InterruptShipMovement();
+            if (shipMovementSourcePlanet != null) {
+                shipMovementSourcePlanet.GetComponent<Planet>().InterruptShipMovement();
+            }
         } else if (Input.GetMouseButtonUp(RIGHT_CLICK_BUTTON)) {
             if (draggingMouse) {
                 GameObject shipMovementDestinationPlanet = getPlanetAtMouse();
                 if (shipMovementSourcePlanet != null && shipMovementDestinationPlanet != null && shipMovementSourcePlanet != shipMovementDestinationPlanet) {
                     Planet sourcePlanet = shipMovementSourcePlanet.GetComponent<Planet>();
-                    sourcePlanet.MoveShips(shipMovementDestinationPlanet);
+                    sourcePlanet.MoveShips(team, shipMovementDestinationPlanet);
                     shipMovementSourcePlanet = null;
                     draggingMouse = false;
                 }
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            team = Team.BLUE;
+        } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            team = Team.RED;
+        } else if (Input.GetKeyDown(KeyCode.Alpha3)) {
+            team = Team.GREEN;
         }
     }
 

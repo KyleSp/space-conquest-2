@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6741635176432329141}
   - component: {fileID: 4826354143329835490}
   m_Layer: 0
-  m_Name: PlanetUnoccupied
+  m_Name: PlanetNeutral
   m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

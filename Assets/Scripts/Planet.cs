@@ -15,9 +15,8 @@ public class Planet : MonoBehaviour
     // public float populationGenerationRate;
     public float shipGenerationRate;
 
-    public GameObject shipTemplate;
-
-    private Queue<GameObject> ships;
+    private Dictionary<Team, Queue<GameObject>> ships;
+    private Dictionary<Team, GameObject> shipTemplates;
     private Sprite sprite;
     private Coroutine moveShipsCoroutine;
     private TextMesh shipCountText;
@@ -25,18 +24,23 @@ public class Planet : MonoBehaviour
     void Start()
     {
         sprite = GetComponent<Sprite>();
-        ships = new Queue<GameObject>();
+        ships = new Dictionary<Team, Queue<GameObject>>();
+        shipTemplates = new Dictionary<Team, GameObject>();
+        foreach (Team team in Team.GetValues(typeof(Team))) {
+            ships.Add(team, new Queue<GameObject>());
+            shipTemplates.Add(team, Resources.Load<GameObject>("Prefabs/Ship" + team.ToString()));
+        }
         shipCountText = this.transform.Find("ShipCountText").GetComponent<TextMesh>();
     }
 
     void Update()
     {
         // update UI
-        shipCountText.text = ships.Count.ToString();
+        shipCountText.text = ships[owner].Count.ToString();
     }
 
     public void UpdatePlanet() {
-        if (owner != Team.NONE) {
+        if (owner != Team.NEUTRAL) {
             troopCount += troopGenerationRate;
             CreateShips();
         }
@@ -44,21 +48,21 @@ public class Planet : MonoBehaviour
 
     private void CreateShips() {
         for (int i = 0; i < shipGenerationRate; ++i) {
-            GameObject shipGameObject = Ship.Instantiate(shipTemplate, transform.position, Quaternion.identity);
+            GameObject shipGameObject = Ship.Instantiate(shipTemplates[owner], transform.position, Quaternion.identity);
             Ship ship = shipGameObject.GetComponent<Ship>();
             ship.InitializeShip(this.gameObject);
-            ships.Enqueue(shipGameObject);
+            ships[owner].Enqueue(shipGameObject);
         }
     }
 
-    public void MoveShips(GameObject destinationPlanet) {
+    public void MoveShips(Team team, GameObject destinationPlanet) {
         InterruptShipMovement();
-        moveShipsCoroutine = StartCoroutine(MoveShipsCoroutine(destinationPlanet));
+        moveShipsCoroutine = StartCoroutine(MoveShipsCoroutine(team, destinationPlanet));
     }
 
-    private IEnumerator MoveShipsCoroutine(GameObject destinationPlanet) {
-        while (ships.Count > 0) {
-            GameObject shipGameObject = ships.Dequeue();
+    private IEnumerator MoveShipsCoroutine(Team team, GameObject destinationPlanet) {
+        while (ships[team].Count > 0) {
+            GameObject shipGameObject = ships[team].Dequeue();
             Ship ship = shipGameObject.GetComponent<Ship>();
             ship.MoveShipBetweenPlanets(this.gameObject, destinationPlanet);
             yield return new WaitForSeconds(SHIP_SPAWN_SPEED);
@@ -71,7 +75,7 @@ public class Planet : MonoBehaviour
             Ship ship = other.GetComponent<Ship>();
             if (ship.GetLastPlanetVisited() != this.gameObject) {
                 ship.stopMovingShip(this.gameObject);
-                ships.Enqueue(ship.gameObject);
+                ships[ship.owner].Enqueue(ship.gameObject);
             }
         }
     }
