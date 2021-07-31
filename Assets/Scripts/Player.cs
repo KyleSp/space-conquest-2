@@ -23,13 +23,13 @@ public class Player : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(RIGHT_CLICK_BUTTON)) {
             draggingMouse = true;
-            shipMovementSourcePlanet = getPlanetAtMouse();
+            shipMovementSourcePlanet = GetPlanetAtMouse();
             if (shipMovementSourcePlanet != null) {
                 shipMovementSourcePlanet.GetComponent<Planet>().InterruptShipMovement();
             }
         } else if (Input.GetMouseButtonUp(RIGHT_CLICK_BUTTON)) {
             if (draggingMouse) {
-                GameObject shipMovementDestinationPlanet = getPlanetAtMouse();
+                GameObject shipMovementDestinationPlanet = GetPlanetAtMouse();
                 if (shipMovementSourcePlanet != null && shipMovementDestinationPlanet != null && shipMovementSourcePlanet != shipMovementDestinationPlanet) {
                     Planet sourcePlanet = shipMovementSourcePlanet.GetComponent<Planet>();
                     sourcePlanet.MoveShips(team, shipMovementDestinationPlanet);
@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private GameObject getPlanetAtMouse() {
+    private GameObject GetPlanetAtMouse() {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D raycastHit = Physics2D.Raycast(mousePosition, Vector2.zero);
         Collider2D collider = raycastHit.collider;

@@ -43,7 +43,7 @@ public class Ship : MonoBehaviour
         currentPlanet = null;
     }
 
-    public void stopMovingShip(GameObject destinationPlanet) {
+    public void StopMovingShip(GameObject destinationPlanet) {
         moving = false;
         currentPlanet = destinationPlanet;
         gameObject.SetActive(false);

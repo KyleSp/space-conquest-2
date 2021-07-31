@@ -31,6 +31,7 @@ public class Planet : MonoBehaviour
             shipTemplates.Add(team, Resources.Load<GameObject>("Prefabs/Ship" + team.ToString()));
         }
         shipCountText = this.transform.Find("ShipCountText").GetComponent<TextMesh>();
+        StartCoroutine(Combat());
     }
 
     void Update()
@@ -74,7 +75,7 @@ public class Planet : MonoBehaviour
         if (other.tag == Tag.SHIP) {
             Ship ship = other.GetComponent<Ship>();
             if (ship.GetLastPlanetVisited() != this.gameObject) {
-                ship.stopMovingShip(this.gameObject);
+                ship.StopMovingShip(this.gameObject);
                 ships[ship.owner].Enqueue(ship.gameObject);
             }
         }
@@ -84,6 +85,25 @@ public class Planet : MonoBehaviour
         if (moveShipsCoroutine != null) {
             StopCoroutine(moveShipsCoroutine);
             moveShipsCoroutine = null;
+        }
+    }
+
+    private IEnumerator Combat() {
+        while (true) {
+            // TODO: implement better combat mechanics
+            List<Queue<GameObject>> combatantTeamShips = new List<Queue<GameObject>>();
+            foreach(KeyValuePair<Team, Queue<GameObject>> teamShipPair in ships) {
+                if (teamShipPair.Value.Count > 0) {
+                    combatantTeamShips.Add(teamShipPair.Value);
+                }
+            }
+            if (combatantTeamShips.Count >= 2) {
+                foreach(Queue<GameObject> teamShips in combatantTeamShips) {
+                    teamShips.Dequeue();
+                }
+            }
+            
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
