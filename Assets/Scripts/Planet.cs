@@ -20,16 +20,19 @@ public class Planet : MonoBehaviour
     private Queue<GameObject> ships;
     private Sprite sprite;
     private Coroutine moveShipsCoroutine;
+    private TextMesh shipCountText;
 
     void Start()
     {
         sprite = GetComponent<Sprite>();
         ships = new Queue<GameObject>();
+        shipCountText = this.transform.Find("ShipCountText").GetComponent<TextMesh>();
     }
 
     void Update()
     {
-        
+        // update UI
+        shipCountText.text = ships.Count.ToString();
     }
 
     public void UpdatePlanet() {
