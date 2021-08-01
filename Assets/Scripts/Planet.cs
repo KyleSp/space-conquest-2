@@ -20,7 +20,10 @@ public class Planet : MonoBehaviour
     private Dictionary<Team, GameObject> shipTemplates;
     private SpriteRenderer spriteRenderer;
     private Coroutine moveShipsCoroutine;
-    private TextMesh shipCountText;
+
+    private TextMesh shipCountTextBlue;
+    private TextMesh shipCountTextRed;
+    private TextMesh shipCountTextGreen;
 
     private Team currentUndisputedOccupant;
     private float currentUndisputedOccupantStartTime;
@@ -36,16 +39,19 @@ public class Planet : MonoBehaviour
             ships.Add(team, new Queue<GameObject>());
             shipTemplates.Add(team, Resources.Load<GameObject>("Prefabs/Ship" + team.ToString()));
         }
-        shipCountText = this.transform.Find("ShipCountText").GetComponent<TextMesh>();
+        shipCountTextBlue = this.transform.Find("ShipCountTextBlue").GetComponent<TextMesh>();
+        shipCountTextRed = this.transform.Find("ShipCountTextRed").GetComponent<TextMesh>();
+        shipCountTextGreen = this.transform.Find("ShipCountTextGreen").GetComponent<TextMesh>();
         StartCoroutine(Combat());
-        
     }
 
     void FixedUpdate()
     {
         CheckColonizeOrConquer();
 
-        shipCountText.text = ships[owner].Count.ToString();
+        shipCountTextBlue.text = ships[Team.BLUE].Count.ToString();
+        shipCountTextRed.text = ships[Team.RED].Count.ToString();
+        shipCountTextGreen.text = ships[Team.GREEN].Count.ToString();
     }
 
     public void UpdatePlanet() {
