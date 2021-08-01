@@ -6,6 +6,7 @@ public class Planet : MonoBehaviour
 {
     private const float SHIP_SPAWN_SPEED = 0.3f;
     private const float COLONIZE_TIME = 5.0f;
+    private const float ROTATE_AROUND_STAR_SPEED = 5.0f;
 
     public Team owner;
     public float troopCapacity;
@@ -20,6 +21,7 @@ public class Planet : MonoBehaviour
     private Dictionary<Team, GameObject> shipTemplates;
     private SpriteRenderer spriteRenderer;
     private Coroutine moveShipsCoroutine;
+    private List<KeyValuePair<Team, Queue<GameObject>>> nonEmptyTeamShips;
 
     private TextMesh shipCountTextBlue;
     private TextMesh shipCountTextRed;
@@ -27,6 +29,8 @@ public class Planet : MonoBehaviour
 
     private Team currentUndisputedOccupant;
     private float currentUndisputedOccupantStartTime;
+
+    private GameObject star;
 
     void Start()
     {
@@ -42,16 +46,20 @@ public class Planet : MonoBehaviour
         shipCountTextBlue = this.transform.Find("ShipCountTextBlue").GetComponent<TextMesh>();
         shipCountTextRed = this.transform.Find("ShipCountTextRed").GetComponent<TextMesh>();
         shipCountTextGreen = this.transform.Find("ShipCountTextGreen").GetComponent<TextMesh>();
+        star = GameObject.FindWithTag("Star");
         StartCoroutine(Combat());
     }
 
     void FixedUpdate()
     {
-        CheckColonizeOrConquer();
+        nonEmptyTeamShips = GetListOfNonEmptyTeamShips();
+        CheckColonizeOrConquer(nonEmptyTeamShips);
 
         shipCountTextBlue.text = ships[Team.BLUE].Count.ToString();
         shipCountTextRed.text = ships[Team.RED].Count.ToString();
         shipCountTextGreen.text = ships[Team.GREEN].Count.ToString();
+
+        // transform.RotateAround(star.transform.position, Vector3.forward, Time.deltaTime * ROTATE_AROUND_STAR_SPEED);
     }
 
     public void UpdatePlanet() {
@@ -105,9 +113,9 @@ public class Planet : MonoBehaviour
     private IEnumerator Combat() {
         while (true) {
             // TODO: implement better combat mechanics
-            List<KeyValuePair<Team, Queue<GameObject>>> combatantTeamShips = GetListOfNonEmptyTeamShips();
-            if (combatantTeamShips.Count >= 2) {
-                foreach(KeyValuePair<Team, Queue<GameObject>> teamShips in combatantTeamShips) {
+            nonEmptyTeamShips = GetListOfNonEmptyTeamShips();
+            if (nonEmptyTeamShips.Count >= 2) {
+                foreach(KeyValuePair<Team, Queue<GameObject>> teamShips in nonEmptyTeamShips) {
                     teamShips.Value.Dequeue();
                 }
             }
@@ -116,8 +124,7 @@ public class Planet : MonoBehaviour
         }
     }
 
-    private void CheckColonizeOrConquer() {
-        List<KeyValuePair<Team, Queue<GameObject>>> nonEmptyTeamShips = GetListOfNonEmptyTeamShips();
+    private void CheckColonizeOrConquer(List<KeyValuePair<Team, Queue<GameObject>>> nonEmptyTeamShips) {
         if (nonEmptyTeamShips.Count == 1) {
             KeyValuePair<Team, Queue<GameObject>> teamShip = nonEmptyTeamShips[0];
             if (teamShip.Key != currentUndisputedOccupant) {
@@ -141,6 +148,10 @@ public class Planet : MonoBehaviour
                 nonEmptyTeamShips.Add(teamShipPair);
             }
         }
+        return nonEmptyTeamShips;
+    }
+
+    public List<KeyValuePair<Team, Queue<GameObject>>> GetNonEmptyTeamShips() {
         return nonEmptyTeamShips;
     }
 
