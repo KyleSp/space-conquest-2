@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
 {
     public Team team;
     private const int RIGHT_CLICK_BUTTON = 1;
+    private const bool DEBUG_MODE = true;
 
     private bool draggingMouse = false;
     private GameObject shipMovementSourcePlanet;
@@ -39,12 +40,14 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            team = Team.BLUE;
-        } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            team = Team.RED;
-        } else if (Input.GetKeyDown(KeyCode.Alpha3)) {
-            team = Team.GREEN;
+        if (DEBUG_MODE) {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) {
+                team = Team.BLUE;
+            } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+                team = Team.RED;
+            } else if (Input.GetKeyDown(KeyCode.Alpha3)) {
+                team = Team.GREEN;
+            }
         }
     }
 

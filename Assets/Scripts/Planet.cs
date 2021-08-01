@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Planet : MonoBehaviour
 {
-    private const float SHIP_SPAWN_SPEED = 0.3f;
+    public const float SHIP_SPAWN_SPEED = 0.3f;
     private const float COLONIZE_TIME = 5.0f;
 
     public Team owner;
@@ -147,6 +147,13 @@ public class Planet : MonoBehaviour
 
     public List<KeyValuePair<Team, Queue<GameObject>>> GetNonEmptyTeamShips() {
         return nonEmptyTeamShips;
+    }
+
+    public int GetPlanetOwnerShipCount() {
+        if (ships != null) {
+            return ships[owner].Count;
+        }
+        return 0;
     }
 
 }

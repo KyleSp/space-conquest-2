@@ -53,10 +53,12 @@ public class GameManager : MonoBehaviour
 
         teamsAlive.Remove(Team.NEUTRAL);
         if (teamsAlive.Count == 1) {
-            Team winner = teamsAlive.GetEnumerator().Current;
-            isGameFinished = true;
-            Time.timeScale = 0f;
-            Debug.Log("WINNER: " + winner);
+            foreach (Team teamAlive in teamsAlive) {
+                Team winner = teamsAlive.GetEnumerator().Current;
+                isGameFinished = true;
+                Time.timeScale = 0f;
+                Debug.Log("WINNER: " + winner);
+            }
         }
     }
 
