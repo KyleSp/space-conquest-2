@@ -6,7 +6,6 @@ public class Planet : MonoBehaviour
 {
     private const float SHIP_SPAWN_SPEED = 0.3f;
     private const float COLONIZE_TIME = 5.0f;
-    private const float ROTATE_AROUND_STAR_SPEED = 5.0f;
 
     public Team owner;
     public float troopCapacity;
@@ -30,8 +29,6 @@ public class Planet : MonoBehaviour
     private Team currentUndisputedOccupant;
     private float currentUndisputedOccupantStartTime;
 
-    private GameObject star;
-
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -46,7 +43,6 @@ public class Planet : MonoBehaviour
         shipCountTextBlue = this.transform.Find("ShipCountTextBlue").GetComponent<TextMesh>();
         shipCountTextRed = this.transform.Find("ShipCountTextRed").GetComponent<TextMesh>();
         shipCountTextGreen = this.transform.Find("ShipCountTextGreen").GetComponent<TextMesh>();
-        star = GameObject.FindWithTag("Star");
         StartCoroutine(Combat());
     }
 
@@ -58,8 +54,6 @@ public class Planet : MonoBehaviour
         shipCountTextBlue.text = ships[Team.BLUE].Count.ToString();
         shipCountTextRed.text = ships[Team.RED].Count.ToString();
         shipCountTextGreen.text = ships[Team.GREEN].Count.ToString();
-
-        // transform.RotateAround(star.transform.position, Vector3.forward, Time.deltaTime * ROTATE_AROUND_STAR_SPEED);
     }
 
     public void UpdatePlanet() {
@@ -94,7 +88,7 @@ public class Planet : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        if (other.tag == Tag.SHIP) {
+        if (other.CompareTag(Tag.SHIP)) {
             Ship ship = other.GetComponent<Ship>();
             if (ship.GetLastPlanetVisited() != this.gameObject) {
                 ship.StopMovingShip(this.gameObject);

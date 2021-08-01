@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
         if (teamsAlive.Count == 1) {
             Team winner = teamsAlive.GetEnumerator().Current;
             isGameFinished = true;
+            Time.timeScale = 0f;
             Debug.Log("WINNER: " + winner);
         }
     }

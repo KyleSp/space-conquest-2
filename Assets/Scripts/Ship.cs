@@ -35,7 +35,7 @@ public class Ship : MonoBehaviour
     }
 
     public void MoveShipBetweenPlanets(GameObject sourcePlanet, GameObject destinationPlanet) {
-        rb.position = sourcePlanet.transform.position;
+        transform.position = sourcePlanet.transform.position;
         gameObject.SetActive(true);
         this.destinationPlanet = destinationPlanet;
         moving = true;
